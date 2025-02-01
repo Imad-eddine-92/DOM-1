@@ -1,6 +1,7 @@
 document.addEventListener("DOMContentLoaded", function () {
     let cartCount = 0; // Nombre d'articles dans le panier
 
+    // Mettre à jour le total en tenant compte de la quantité initiale
     const updateTotal = () => {
         let total = 0;
         document.querySelectorAll(".card").forEach(card => {
@@ -16,10 +17,16 @@ document.addEventListener("DOMContentLoaded", function () {
         document.getElementById("cart-count").textContent = cartCount;
     };
 
+    // Initialiser la quantité à 1 pour chaque article
+    document.querySelectorAll(".quantity").forEach(quantitySpan => {
+        cartCount += parseInt(quantitySpan.textContent);  // Ajoute la quantité initiale de chaque article au total du panier
+    });
+    updateCartCount();
+
     document.querySelectorAll(".fa-plus-circle").forEach(button => {
         button.addEventListener("click", function () {
             let quantitySpan = this.nextElementSibling;
-            let card = this.closest(".card");  // Cibler toute la carte
+            let card = this.closest(".card");
             let unitPrice = parseInt(card.querySelector(".unit-price").textContent.replace(" $", ""));
             let totalElement = document.querySelector(".total");
             let currentTotal = parseInt(totalElement.textContent.replace(" $", ""));
@@ -34,12 +41,12 @@ document.addEventListener("DOMContentLoaded", function () {
     document.querySelectorAll(".fa-minus-circle").forEach(button => {
         button.addEventListener("click", function () {
             let quantitySpan = this.previousElementSibling;
-            let card = this.closest(".card");  // Cibler toute la carte
+            let card = this.closest(".card");
             let unitPrice = parseInt(card.querySelector(".unit-price").textContent.replace(" $", ""));
             let totalElement = document.querySelector(".total");
             let currentTotal = parseInt(totalElement.textContent.replace(" $", ""));
             
-            if (parseInt(quantitySpan.textContent) > 0) {
+            if (parseInt(quantitySpan.textContent) > 1) {  // S'assurer qu'on ne passe pas en dessous de 1
                 quantitySpan.textContent = parseInt(quantitySpan.textContent) - 1;
                 cartCount--;  // Retirer un article du panier
                 totalElement.textContent = (currentTotal - unitPrice) + " $";
